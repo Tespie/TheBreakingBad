@@ -1,0 +1,8 @@
+export const Colors = {
+  COLOR_NERO: '#242424', // Nero
+  COLOR_WHITE: '#FFFFFF',
+  COLOR_BLACK: '#000000',
+  COLOR_GREEN: '#18CA75',
+  COLOR_DARK_GRAY: '#3D3D3D',
+  COLOR_CALIFORNIA_SUNSET: '#CA184E',
+};
