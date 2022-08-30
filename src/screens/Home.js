@@ -21,6 +21,8 @@ import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
 const Home = ({navigation}) => {
   const [charactersData, setCharactersData] = useState(() => []);
   const [spinnerVisible, setSpinnerVisible] = useState(() => false);
+  const [search, setSearch] = useState('');
+
   /**
    * Header Design
    */
@@ -31,7 +33,18 @@ const Home = ({navigation}) => {
         <View style={{marginRight: sizeWidth(2), flexDirection: 'row'}}>
           <TouchableOpacity
             onPress={() => {
+              // alert('2')
               navigation.navigate('Search');
+              // navigation.setOptions({
+              //   headerSearchBarOptions : {
+              //     search: 'dfdfdf',
+              //     placeholder : 'seach bb',
+              //     autoFocus : true,
+              //     textColor : 'red',
+              //     onChangeText: (event) => setSearch('ffgfg'),
+              //   }
+              // })
+
             }}>
             <Image
               style={styles.imgSearch}
@@ -55,6 +68,14 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     webservice_Characters();
+    // navigation.setOptions({
+    //   headerSearchBarOptions: {
+    //     // onChangeText: (event) => setSearch(event.nativeEvent.text),
+    //     onChangeText: (event) => setSearch('ffgfg'),
+    //   }
+    // });
+
+
   }, []);
 
   const webservice_Characters = async () => {
@@ -121,10 +142,10 @@ const Home = ({navigation}) => {
     // Main container view
     <View style={styles.container}>
 
-<NetSpinnerOverlay
+                  <NetSpinnerOverlay
                     color={Colors.COLOR_WHITE}
                     visible={spinnerVisible}
-                />
+                  />
 
       {/* <View style={{ backgroundColor : 'red',flexDirection: 'row'}}>
         <View style={{flex: 1}}>

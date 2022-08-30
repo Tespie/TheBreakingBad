@@ -31,14 +31,29 @@ const AppRouter = () => {
                         borderBottomColor : Colors.COLOR_BLACK,
                     },
                     headerTintColor : Colors.COLOR_WHITE,
-                    headerShadowVisible : false
+                    headerShadowVisible : false,
+                    //searchbar
+                    // headerSearchBarOptions : {
+                    //     barTintColor : 'red',
+                    //     inputType  : 'text',
+                    //     placeholder : 'seach bb'
+                    // }
                 }} 
                 />
 
-                <Stack.Screen name='Search' component={Search}/>
+                <Stack.Screen name='Search' component={Search}
+                options={{
+                    // headerShown: true,
+                    // headerTransparent : true,
+                    headerStyle : {
+                        backgroundColor: Colors.COLOR_BLACK,
+                        borderBottomColor : Colors.COLOR_BLACK,
+                    },
+                    headerTintColor : Colors.COLOR_WHITE,
+                }}
+                />
 
-                <Stack.Screen name='Details' 
-                component={Details}
+                <Stack.Screen name='Details' component={Details}
                 options={{
                     headerShown: true,
                     headerTransparent : true,

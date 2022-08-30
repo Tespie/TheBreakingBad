@@ -5,4 +5,5 @@ export const Colors = {
   COLOR_GREEN: '#18CA75',
   COLOR_DARK_GRAY: '#3D3D3D',
   COLOR_CALIFORNIA_SUNSET: '#CA184E',
+  COLOR_GRAY67: '#ABABAB',
 };
