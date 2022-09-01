@@ -24,32 +24,79 @@ import {Strings} from '../utils/Strings';
 import {Colors} from '../utils/Colors';
 import {shouldUseActivityState} from 'react-native-screens';
 import moment from 'moment';
+import { setrestaurentFavIdsList } from '../redux/actions/CharacterFavAction';
+import { useDispatch, useSelector } from 'react-redux';
 const Details = ({route, navigation}) => {
-  const {character} = route.params;
 
-  const [charactersData, setCharactersData] = useState(() => []);
+  const {character} = route.params;
+// const [character, setCharacter] = useState(() => route.params);
+
+
+
+  const [isfavorite, setisfavorite] = useState(() => character.isfavorite);
   const [dob, setDob] = useState(() => moment(new Date()).format('DD-MMM-YYYY'));
+  const selector = useSelector(state => state.CharacterFavReducer);
+  const dispetch = useDispatch();
 
   /**
    * Header Design
    */
   React.useLayoutEffect(() => {
+
+    console.log('character = ',character)
+    console.log('character fied = ',JSON.stringify(character))
+
+
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
+        style={{padding : sizeHeight(2)}}
           onPress={() => {
             // navigation.navigate('Search');
-            alert('i will go to Favourites')
+            FavClick(character);
+            // alert('i will go to Favourites')
           }}>
-          <Image
-            style={styles.imgFilled}
-            source={require('../res/Images/heartfill.png')}
-          />
+          {/* <Image style={styles.imgFilled}  source={require('../res/Images/heartfill.png')}/> */}
+
+          {/* <Image
+              style={[styles.imgFavourite, {tintColor : character.isfavorite == 'N' ? Colors.COLOR_GRAY67 : Colors.COLOR_GREEN  } ]}
+              source={character.isfavorite == 'N'  ? require('../res/Images/heart.png') : require('../res/Images/heartfill.png')}
+            />  */}
+
+            <Image
+              style={[styles.imgFavourite, {tintColor : isfavorite == 'N' ? Colors.COLOR_GRAY67 : Colors.COLOR_GREEN  } ]}
+              source={isfavorite == 'N'  ? require('../res/Images/heart.png') : require('../res/Images/heartfill.png')}
+            /> 
+
         </TouchableOpacity>
       ),
       headerTitle : '',
     });
-  }, [navigation]);
+  }, [navigation,isfavorite]);
+
+  const FavClick = (character) => {
+    // alert('fav clicked character isfav before = '+character.isfavorite)
+    // character.isfavorite = !character.isfavorite;
+
+    if(character.isfavorite == 'Y') character.isfavorite = 'N'
+    else character.isfavorite = 'Y'
+
+    if(isfavorite == 'Y') 
+      setisfavorite('N')
+    else setisfavorite('Y')
+    
+    dispetch(setrestaurentFavIdsList(selector.restaurentfavIds, character))
+
+
+    // alert('fav clicked character isfav after = '+character.isfavorite)
+    
+    // setTimeout(() => {
+      
+    //    alert('fav clicked character isfav after = '+isfavorite)
+    // }, 5000);
+
+
+  }
 
   useEffect(() => {
     // webservice_Characters();
@@ -124,7 +171,7 @@ const Details = ({route, navigation}) => {
           <View>
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: 'row', 
                 alignItems: 'center',
               }}>
               <NetTextLabel

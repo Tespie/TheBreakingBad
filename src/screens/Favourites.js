@@ -17,14 +17,22 @@ import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { sizeFont, sizeHeight, sizeWidth } from '../utils/Size';
+import { useIsFocused } from "@react-navigation/native";
+
 
 const Favourites = ({navigation}) => {
+  const isFocused = useIsFocused();
+
   const [charactersData, setCharactersData] = useState(() => []);
   const [favouritesData, setFavouritesData] = useState(() => []);
   const selector = useSelector(state => state.CharacterFavReducer);
+  console.log('FAVOURITES ids in Fav first:::', selector.restaurentfavIds);
   const dispetch = useDispatch();
 
 
+  /**
+   * Header Design
+   */
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'Favourites',
@@ -41,25 +49,33 @@ const Favourites = ({navigation}) => {
           </TouchableOpacity>
       ),
     });
+
   }, [navigation]);
 
   useEffect(() => {
-
-    
     // webservice_Characters();
     // return;
-    const focusListener = navigation.addListener('focus', () => {
-      console.log('ids in Fav:::', selector.restaurentfavIds);
-      setFavouritesData(selector.restaurentfavIds);
-    });
-    
-    alert('in fav = '+favouritesData)
-    return () => focusListener;
-  }, []);
 
+    if(isFocused){ 
+      setFavouritesData([]);
   
+      setFavouritesData(selector.restaurentfavIds);
+  
+      console.log('FAVOURITES useLayoutEffect ids in Fav:::', selector.restaurentfavIds);
+    }
+
+    // const focusListener = navigation.addListener('focus', () => {
+    //   console.log('FAVOURITES useEffect ids in Fav:::', selector.restaurentfavIds);
+    //   setFavouritesData(selector.restaurentfavIds);
+    // });
+    
+    // alert('FAVOURITES favouritesData in fav = '+favouritesData)
+    // return () => focusListener;
+  }, [isFocused]);
+
+  //  API CALL
   const webservice_Characters = async () => {
-    // alert('trrrrrrrrrr')
+    alert('trrrrrrrrrr')
     // setSpinnerVisible(true);
     getServiceCall(ApiList.CHARACTERS, '')
       .then(responseJson => {

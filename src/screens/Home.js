@@ -65,7 +65,7 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
 
-    setFavouritesData(selector.restaurentfavIds);
+    // setFavouritesData(selector.restaurentfavIds); // DELETE
     webservice_Characters();
     // navigation.setOptions({
     //   headerSearchBarOptions: {
@@ -79,7 +79,7 @@ const Home = ({navigation}) => {
     // setFavouritesData(selector.restaurentfavIds);
 
     const focusListener = navigation.addListener('focus', () => {
-      console.log('ids in Fav:::', selector.restaurentfavIds);
+      console.log('HOME useEffect ids in Fav:::', selector.restaurentfavIds);
       
     });
 
@@ -109,11 +109,14 @@ const Home = ({navigation}) => {
           // setCharactersData(responseJson.data);
           setSpinnerVisible(false);
 
+          // var test = selector.restaurentfavIds;
+          // alert('test = ' + test);
+          // alert('testfied = ' + JSON.stringify(test));
           // alert("favouritesData type = "+typeof favouritesData);
           // alert('1 = ' + JSON.stringify(favouritesData));
-          var favids = favouritesData.map(item => item.char_id);
+          var favids = selector.restaurentfavIds.map(item => item.char_id);
           favids =  Object.values(favids);
-          alert("favids = "+JSON.stringify(favids));
+          // alert("favids = "+JSON.stringify(favids));
           // alert("favids = "+typeof favids);
           // alert("favids = "+favids.includes(item.char_id));
           
@@ -122,12 +125,30 @@ const Home = ({navigation}) => {
           const newArr = responseJson.data.map(item => {
             // console.log("favids has  = "+favids.includes(item.char_id));
             // const newArr = charactersData.map(item => {
-            return {
-              ...item,
-              // favids.inclu
-              // isfavorite: 'N',
-              isfavorite: favids.includes(item.char_id) ? 'Y' :  'N',
-            };
+              if(favids.includes(item.char_id)){
+
+                return {
+                  ...item,
+                  // favids.inclu
+                  // isfavorite: 'N',
+                  isfavorite: 'Y',
+                };
+
+              } else {
+                return {
+                  ...item,
+                  // favids.inclu
+                  // isfavorite: 'N',
+                  isfavorite: 'N',
+                };
+
+              }
+            // return {
+            //   ...item,
+            //   // favids.inclu
+            //   // isfavorite: 'N',
+            //   isfavorite: favids.includes(item.char_id) ? 'Y' :  'N',
+            // };
           });
           setCharactersData(newArr);
         } else {
