@@ -17,34 +17,31 @@ import {Fonts} from '../utils/Fonts';
 import {Strings} from '../utils/Strings';
 import {Colors} from '../utils/Colors';
 import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
+import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
+import {useDispatch, useSelector} from 'react-redux';
+import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
 
 const Home = ({navigation}) => {
   const [charactersData, setCharactersData] = useState(() => []);
   const [spinnerVisible, setSpinnerVisible] = useState(() => false);
   const [search, setSearch] = useState('');
 
+  // REDUX
+  const dispetch = useDispatch();
+  const selector = useSelector(state => state.CharacterFavReducer);
+  const [favouritesData, setFavouritesData] = useState(() => []);
+
   /**
    * Header Design
    */
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle : 'The Breaking bad',
+      headerTitle: 'The Breaking bad',
       headerRight: () => (
         <View style={{marginRight: sizeWidth(2), flexDirection: 'row'}}>
           <TouchableOpacity
             onPress={() => {
-              // alert('2')
               navigation.navigate('Search');
-              // navigation.setOptions({
-              //   headerSearchBarOptions : {
-              //     search: 'dfdfdf',
-              //     placeholder : 'seach bb',
-              //     autoFocus : true,
-              //     textColor : 'red',
-              //     onChangeText: (event) => setSearch('ffgfg'),
-              //   }
-              // })
-
             }}>
             <Image
               style={styles.imgSearch}
@@ -67,6 +64,8 @@ const Home = ({navigation}) => {
   }, [navigation]);
 
   useEffect(() => {
+
+    setFavouritesData(selector.restaurentfavIds);
     webservice_Characters();
     // navigation.setOptions({
     //   headerSearchBarOptions: {
@@ -76,25 +75,88 @@ const Home = ({navigation}) => {
     // });
 
 
+    // REDUX- GET FAVS here
+    // setFavouritesData(selector.restaurentfavIds);
+
+    const focusListener = navigation.addListener('focus', () => {
+      console.log('ids in Fav:::', selector.restaurentfavIds);
+      
+    });
+
+    return () => focusListener;
+
+
+    // REDUX
+    // const newArr = favouritesData.map(item => {
+    // // const newArr = charactersData.map(item => {
+    //   return {
+    //     ...item,
+    //     isfavorite: 'N',
+    //   };
+    // });
+    // setFavouritesData(newArr);
+    setTimeout(() => {
+      console.log('favouritesDataArray::', JSON.stringify(favouritesData));
+    }, 2000);
   }, []);
 
   const webservice_Characters = async () => {
-    setSpinnerVisible(true)
+    setSpinnerVisible(true);
     getServiceCall(ApiList.CHARACTERS, '')
       .then(responseJson => {
         // console.log("Response>>>", JSON.stringify(responseJson));
         if (responseJson.status == 200) {
-          setCharactersData(responseJson.data);
-          setSpinnerVisible(false)
+          // setCharactersData(responseJson.data);
+          setSpinnerVisible(false);
+
+          // alert("favouritesData type = "+typeof favouritesData);
+          // alert('1 = ' + JSON.stringify(favouritesData));
+          var favids = favouritesData.map(item => item.char_id);
+          favids =  Object.values(favids);
+          alert("favids = "+JSON.stringify(favids));
+          // alert("favids = "+typeof favids);
+          // alert("favids = "+favids.includes(item.char_id));
+          
+
+          //redux
+          const newArr = responseJson.data.map(item => {
+            // console.log("favids has  = "+favids.includes(item.char_id));
+            // const newArr = charactersData.map(item => {
+            return {
+              ...item,
+              // favids.inclu
+              // isfavorite: 'N',
+              isfavorite: favids.includes(item.char_id) ? 'Y' :  'N',
+            };
+          });
+          setCharactersData(newArr);
         } else {
-          setSpinnerVisible(false)
+          setSpinnerVisible(false);
           console.log('Status 400>>>', JSON.stringify(responseJson));
         }
       })
       .catch(error => {
         console.log('Error>>>', JSON.stringify(error));
-        setSpinnerVisible(false)
+        setSpinnerVisible(false);
       });
+  };
+
+  const characterFavClick = async (item, index, type) => {
+    // const newRestaurantList = favouritesData;
+    const newRestaurantList = charactersData;
+    let events = [...newRestaurantList];
+    // console.log('events::', JSON.stringify(events));
+    events.map(obj => {
+      if (obj.char_id == item.char_id) {
+        obj.isfavorite == 'Y' ? (obj.isfavorite = 'N') : (obj.isfavorite = 'Y');
+      }
+    });
+    // console.log("item::",JSON.stringify(item))
+    setFavouritesData(events);
+    console.log('item::', JSON.stringify(item));
+    console.log('item isfavorite ::', item.isfavorite);
+    dispetch(setrestaurentFavIdsList(selector.restaurentfavIds, item));
+    console.log('ids::', selector.restaurentfavIds);
   };
 
   const renderCharacters = ({item, index}) => {
@@ -119,11 +181,18 @@ const Home = ({navigation}) => {
             style={styles.txtName}
             label={item.name}
           />
-          <TouchableOpacity onPress={() => alert('add me to Favourites')}>
+          <TouchableOpacity
+            onPress={() => {
+              // alert('add me to Favourites')
+              characterFavClick(item, index, 'character');
+            }}>
+
+            {/* <Image style={styles.imgFavourite} source={require('../res/Images/heart.png')} /> */}
+
             <Image
-              style={styles.imgFavourite}
-              source={require('../res/Images/heart.png')}
-            />
+              style={[styles.imgFavourite, {tintColor : item.isfavorite == 'N' ? Colors.COLOR_GRAY67 : Colors.COLOR_GREEN  } ]}
+              source={item.isfavorite == 'N'  ? require('../res/Images/heart.png') : require('../res/Images/heartfill.png')}
+            /> 
           </TouchableOpacity>
         </View>
         <View>
@@ -141,11 +210,7 @@ const Home = ({navigation}) => {
   return (
     // Main container view
     <View style={styles.container}>
-
-                  <NetSpinnerOverlay
-                    color={Colors.COLOR_WHITE}
-                    visible={spinnerVisible}
-                  />
+      <NetSpinnerOverlay color={Colors.COLOR_WHITE} visible={spinnerVisible} />
 
       {/* <View style={{ backgroundColor : 'red',flexDirection: 'row'}}>
         <View style={{flex: 1}}>
@@ -178,7 +243,7 @@ const Home = ({navigation}) => {
         numColumns={2}
         nestedScrollEnabled={true}
         showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator = {false}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>
@@ -190,7 +255,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: sizeWidth(2),
-    backgroundColor: '#000000',
+    backgroundColor: Colors.COLOR_BLACK,
+    // backgroundColor: 'lightpink',
   },
   nameAndHeartView: {
     justifyContent: 'space-between',
@@ -227,7 +293,7 @@ const styles = StyleSheet.create({
     color: Colors.COLOR_WHITE,
     // color: 'gray',
     fontSize: sizeFont(4),
-    fontFamily: Fonts.FONT_ITALIC,
+    fontFamily: Fonts.FONT_LIGHT,
     padding: sizeWidth(2),
     paddingTop: 0,
     // backgroundColor : 'red'

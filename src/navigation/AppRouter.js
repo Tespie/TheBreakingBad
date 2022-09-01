@@ -3,11 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/Home';
 import Search from '../screens/Search';
-import SearchDetails from '../screens/SearchDetails';
+// import SearchDetails from '../screens/SearchDetails';
 import Splash from '../screens/Splash';
 import Details from '../screens/Details';
 import { Text } from 'react-native';
 import { Colors } from '../utils/Colors';
+import Favourites from '../screens/Favourites';
+import { sizeFont } from '../utils/Size';
 
 const Stack = createStackNavigator();
 
@@ -60,7 +62,23 @@ const AppRouter = () => {
                     headerTintColor : Colors.COLOR_WHITE,
                 }} 
                 />
-                <Stack.Screen name='SearchDetails' component={SearchDetails}/>
+                <Stack.Screen name='Favourites' component={Favourites}
+                options={{
+                    headerShown: true,
+                    // headerTransparent : true,
+                    headerLeft: ()=> null,
+
+                    headerStyle : {
+                        backgroundColor: Colors.COLOR_BLACK,
+                        borderBottomColor : Colors.COLOR_BLACK,
+                    },
+                    headerTitleStyle : {
+                        color : Colors.COLOR_GREEN,
+fontSize : sizeFont(6),
+                    },
+                    headerTintColor : Colors.COLOR_WHITE,
+                }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
