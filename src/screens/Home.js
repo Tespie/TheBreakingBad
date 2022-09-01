@@ -20,8 +20,10 @@ import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
 import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
 import {useDispatch, useSelector} from 'react-redux';
 import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
+import { useIsFocused } from "@react-navigation/native"; // This is gem :)
 
 const Home = ({navigation}) => {
+  const isFocused = useIsFocused(); // gem mining :)
   const [charactersData, setCharactersData] = useState(() => []);
   const [spinnerVisible, setSpinnerVisible] = useState(() => false);
   const [search, setSearch] = useState('');
@@ -63,44 +65,55 @@ const Home = ({navigation}) => {
     });
   }, [navigation]);
 
+
   useEffect(() => {
 
-    // setFavouritesData(selector.restaurentfavIds); // DELETE
     webservice_Characters();
-    // navigation.setOptions({
-    //   headerSearchBarOptions: {
-    //     // onChangeText: (event) => setSearch(event.nativeEvent.text),
-    //     onChangeText: (event) => setSearch('ffgfg'),
-    //   }
-    // });
+
+    if(isFocused) // gem used 
+      setFavouritesData(selector.restaurentfavIds);
+
+  }, [isFocused]);
+
+  // useEffect(() => {
+
+  //   // setFavouritesData(selector.restaurentfavIds); // DELETE
+  //   webservice_Characters();
+  //   // navigation.setOptions({
+  //   //   headerSearchBarOptions: {
+  //   //     // onChangeText: (event) => setSearch(event.nativeEvent.text),
+  //   //     onChangeText: (event) => setSearch('ffgfg'),
+  //   //   }
+  //   // });
 
 
-    // REDUX- GET FAVS here
-    // setFavouritesData(selector.restaurentfavIds);
+  //   // REDUX- GET FAVS here
+  //   // setFavouritesData(selector.restaurentfavIds);
 
-    const focusListener = navigation.addListener('focus', () => {
-      console.log('HOME useEffect ids in Fav:::', selector.restaurentfavIds);
+  //   const focusListener = navigation.addListener('focus', () => {
+  //     console.log('HOME useEffect ids in Fav:::', selector.restaurentfavIds);
       
-    });
+  //   });
 
-    return () => focusListener;
+  //   return () => focusListener;
 
 
-    // REDUX
-    // const newArr = favouritesData.map(item => {
-    // // const newArr = charactersData.map(item => {
-    //   return {
-    //     ...item,
-    //     isfavorite: 'N',
-    //   };
-    // });
-    // setFavouritesData(newArr);
-    setTimeout(() => {
-      console.log('favouritesDataArray::', JSON.stringify(favouritesData));
-    }, 2000);
-  }, []);
+  //   // REDUX
+  //   // const newArr = favouritesData.map(item => {
+  //   // // const newArr = charactersData.map(item => {
+  //   //   return {
+  //   //     ...item,
+  //   //     isfavorite: 'N',
+  //   //   };
+  //   // });
+  //   // setFavouritesData(newArr);
+  //   setTimeout(() => {
+  //     console.log('favouritesDataArray::', JSON.stringify(favouritesData));
+  //   }, 2000);
+  // }, []);
 
   const webservice_Characters = async () => {
+    alert('HOME Characters ws called')
     setSpinnerVisible(true);
     getServiceCall(ApiList.CHARACTERS, '')
       .then(responseJson => {
