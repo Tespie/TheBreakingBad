@@ -129,16 +129,12 @@ const Home = ({navigation}) => {
 
                 return {
                   ...item,
-                  // favids.inclu
-                  // isfavorite: 'N',
                   isfavorite: 'Y',
                 };
 
               } else {
                 return {
                   ...item,
-                  // favids.inclu
-                  // isfavorite: 'N',
                   isfavorite: 'N',
                 };
 

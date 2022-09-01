@@ -1,23 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import {
-  TouchableOpacity,
-  SafeAreaView,
+  FlatList,
   StyleSheet,
   Image,
   View,
-  Pressable,
-  TextInput,
+  TouchableOpacity,
+  Alert,
   Text,
-  FlatList,
   TouchableHighlight,
+  TextInput,
 } from 'react-native';
-import {ApiList} from '../api/ApiList';
-import {getServiceCall} from '../api/Webservice';
-import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
 import NetTextLabel from '../components/NetTextLabel';
-import {Colors} from '../utils/Colors';
+import {getServiceCall} from '../api/Webservice';
+import {ApiList} from '../api/ApiList';
+import {sizeFont, sizeHeight, sizeWidth} from '../utils/Size';
 import {Fonts} from '../utils/Fonts';
-import {DEVICE_WIDTH, sizeFont, sizeHeight, sizeWidth} from '../utils/Size';
+import {Strings} from '../utils/Strings';
+import {Colors} from '../utils/Colors';
+import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
+import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
+import {useDispatch, useSelector} from 'react-redux';
+import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
+
+
+
+
 
 const Search = ({navigation}) => {
   // --------------------------------------- States ---------------------------------------
@@ -25,6 +32,13 @@ const Search = ({navigation}) => {
   // const [charactersData, setCharactersData] = useState(() => [[]]);
   const [charactersData, setCharactersData] = useState([]);
   const [spinnerVisible, setSpinnerVisible] = useState(() => false);
+
+  // REDUX
+  const dispetch = useDispatch();
+  const selector = useSelector(state => state.CharacterFavReducer);
+  const [favouritesData, setFavouritesData] = useState(() => []);
+
+
 
   // --------------------------------------- Main Design  ---------------------------------------
   React.useLayoutEffect(() => {
@@ -83,6 +97,26 @@ const Search = ({navigation}) => {
         if (responseJson.status == 200) {
           setCharactersData(responseJson.data);
           setSpinnerVisible(false);
+
+          // Get Fav Ids
+          var favids = selector.restaurentfavIds.map(item => item.char_id);
+          favids =  Object.values(favids);
+
+          //redux
+          const newArr = responseJson.data.map(item => {
+            // console.log("favids has  = "+favids.includes(item.char_id));
+            // const newArr = charactersData.map(item => {
+              
+            return {
+              ...item,
+              // favids.inclu
+              // isfavorite: 'N',
+              isfavorite: favids.includes(item.char_id) ? 'Y' :  'N',
+            };
+          });
+          setCharactersData(newArr);
+
+
         } else {
           setSpinnerVisible(false);
           console.log('Status 400>>>', JSON.stringify(responseJson));
@@ -94,9 +128,26 @@ const Search = ({navigation}) => {
       });
   };
 
+  const characterFavClick = async (item, index, type) => {
+    // const newRestaurantList = favouritesData;
+    const newRestaurantList = charactersData;
+    let events = [...newRestaurantList];
+    // console.log('events::', JSON.stringify(events));
+    events.map(obj => {
+      if (obj.char_id == item.char_id) {
+        obj.isfavorite == 'Y' ? (obj.isfavorite = 'N') : (obj.isfavorite = 'Y');
+      }
+    });
+    // console.log("item::",JSON.stringify(item))
+    setFavouritesData(events);
+    console.log('item::', JSON.stringify(item));
+    console.log('item isfavorite ::', item.isfavorite);
+    dispetch(setrestaurentFavIdsList(selector.restaurentfavIds, item));
+    console.log('ids::', selector.restaurentfavIds);
+  };
+
   const renderCharacters = ({item, index}) => {
-    // alert('length ='+charactersData.length)
-    return charactersData.length ? (
+    return (
       <View
         style={styles.viewMain}
         // onPress={() => {alert('Hey you clicked')}}
@@ -117,11 +168,18 @@ const Search = ({navigation}) => {
             style={styles.txtName}
             label={item.name}
           />
-          <TouchableOpacity onPress={() => alert('add me to Favourites')}>
+          <TouchableOpacity
+            onPress={() => {
+              // alert('add me to Favourites')
+              characterFavClick(item, index, 'character');
+            }}>
+
+            {/* <Image style={styles.imgFavourite} source={require('../res/Images/heart.png')} /> */}
+
             <Image
-              style={styles.imgFavourite}
-              source={require('../res/Images/heart.png')}
-            />
+              style={[styles.imgFavourite, {tintColor : item.isfavorite == 'N' ? Colors.COLOR_GRAY67 : Colors.COLOR_GREEN  } ]}
+              source={item.isfavorite == 'N'  ? require('../res/Images/heart.png') : require('../res/Images/heartfill.png')}
+            /> 
           </TouchableOpacity>
         </View>
         <View>
@@ -133,8 +191,7 @@ const Search = ({navigation}) => {
         </View>
         {/* </View> */}
       </View>
-    ) 
-    : null;
+    );
   };
 
   return (
