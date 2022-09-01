@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: Fonts.FONT_BOLD,
     fontSize: sizeFont(4.5),
+    flex : 0.9
   },
   txtNickname: {
     color: Colors.COLOR_WHITE,
@@ -266,6 +267,7 @@ const styles = StyleSheet.create({
     height: sizeWidth(6),
     width: sizeWidth(6),
       tintColor: 'gray',
+      flex : 0.1
   },
 
 });
