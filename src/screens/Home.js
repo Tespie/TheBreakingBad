@@ -113,11 +113,7 @@ const Home = ({navigation}) => {
   // }, []);
 
   const webservice_Characters = async () => {
-<<<<<<< HEAD
     // alert('HOME Characters ws called')
-=======
-    alert('HOME Characters ws called')
->>>>>>> 76dd68930e9ce57e455f463df094c4d78cf3860d
     setSpinnerVisible(true);
     getServiceCall(ApiList.CHARACTERS, '')
       .then(responseJson => {
