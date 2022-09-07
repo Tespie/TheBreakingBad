@@ -21,6 +21,7 @@ import NetSpinnerOverlay from '../components/NetSpinnerOverlay';
 import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
 import {useDispatch, useSelector} from 'react-redux';
 import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
+import Character from '../components/Character';
 
 
 
@@ -140,10 +141,10 @@ const Search = ({navigation}) => {
     });
     // console.log("item::",JSON.stringify(item))
     setFavouritesData(events);
-    console.log('item::', JSON.stringify(item));
-    console.log('item isfavorite ::', item.isfavorite);
+    // console.log('item::', JSON.stringify(item));
+    // console.log('item isfavorite ::', item.isfavorite);
     dispetch(setrestaurentFavIdsList(selector.restaurentfavIds, item));
-    console.log('ids::', selector.restaurentfavIds);
+    // console.log('ids::', selector.restaurentfavIds);
   };
 
   const renderCharacters = ({item, index}) => {
@@ -253,8 +254,9 @@ const Search = ({navigation}) => {
       ) : (
         <FlatList
           data={charactersData}
-          renderItem={charactersData.length > 0 ? renderCharacters : null}
+          // renderItem={charactersData.length > 0 ? renderCharacters : null}
           // renderItem={renderCharacters}
+          renderItem={(item,index)=> <Character characterData={item.item} characterFavClick={()=>characterFavClick(item.item,index)} navigation={navigation} />}
           bounces={true}
           // horizontal
           numColumns={2}

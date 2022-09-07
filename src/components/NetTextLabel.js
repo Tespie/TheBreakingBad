@@ -10,12 +10,14 @@ export default class NetTextLabel extends Component {
         ellipsizeMode: propTypes.any,
         numberOfLines: propTypes.any,
         label: propTypes.any,
+        mykey: propTypes.any,
     };
     //REVIEW:  render
     render() {
-        const { style, onPress, ellipsizeMode, numberOfLines, label } = this.props;
+        const { style, onPress, ellipsizeMode, numberOfLines, label , mykey} = this.props;
         return (
             <Text
+                key={mykey}
                 numberOfLines={numberOfLines}
                 ellipsizeMode={ellipsizeMode}
                 onPress={onPress}

@@ -21,6 +21,7 @@ import {setrestaurentFavIdsList} from '../redux/actions/CharacterFavAction';
 import {useDispatch, useSelector} from 'react-redux';
 import { initializeUseSelector } from 'react-redux/es/hooks/useSelector';
 import { useIsFocused } from "@react-navigation/native"; // This is gem :)
+import Character from '../components/Character';
 
 const Home = ({navigation}) => {
   const isFocused = useIsFocused(); // gem mining :)
@@ -172,6 +173,7 @@ const Home = ({navigation}) => {
   };
 
   const characterFavClick = async (item, index, type) => {
+    console.log('characterFavClick item = '+JSON.stringify(item))
     // const newRestaurantList = favouritesData;
     const newRestaurantList = charactersData;
     let events = [...newRestaurantList];
@@ -183,13 +185,14 @@ const Home = ({navigation}) => {
     });
     // console.log("item::",JSON.stringify(item))
     setFavouritesData(events);
-    console.log('item::', JSON.stringify(item));
-    console.log('item isfavorite ::', item.isfavorite);
+    // console.log('item::', JSON.stringify(item));
+    // console.log('item isfavorite ::', item.isfavorite);
     dispetch(setrestaurentFavIdsList(selector.restaurentfavIds, item));
-    console.log('ids::', selector.restaurentfavIds);
+    // console.log('ids::', selector.restaurentfavIds);
   };
 
   const renderCharacters = ({item, index}) => {
+    //console.log('rc item = '+JSON.stringify(item))
     return (
       <View
         style={styles.viewMain}
@@ -267,7 +270,10 @@ const Home = ({navigation}) => {
 
       <FlatList
         data={charactersData}
-        renderItem={renderCharacters}
+        // renderItem={renderCharacters}
+        renderItem={(item,index)=> <Character characterData={item.item} characterFavClick={()=>characterFavClick(item.item,index)} navigation={navigation} />}
+        // renderItem={(item)=> <Character characterData={item} characterFavClick={()=>characterFavClick(item)} />} // item object Issue
+        // renderItem={<Character characterData={item} characterFavClick={()=>characterFavClick(item)} />}
         bounces={false}
         // horizontal
         numColumns={2}
@@ -275,6 +281,7 @@ const Home = ({navigation}) => {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
+        // initialNumToRender = {2}
       />
     </View>
   );
@@ -315,6 +322,7 @@ const styles = StyleSheet.create({
     width: sizeWidth(44),
     marginHorizontal: sizeWidth(2),
     margin: sizeWidth(1),
+    backgroundColor : 'red'
   },
   txtName: {
     color: '#FFFFFF',

@@ -199,6 +199,7 @@ const Details = ({route, navigation}) => {
             <View>
               {character.occupation.map((item, key) => (
                 <NetTextLabel
+                  mykey={key}
                   numberOfLines={1}
                   style={styles.txtDetailDesc}
                   label={item}
@@ -220,6 +221,7 @@ const Details = ({route, navigation}) => {
               <ScrollView horizontal={true}>
               {character.appearance.map((item, key) => (
                 <NetTextLabel
+                  mykey={key}
                   style={[styles.txtDetailDesc, styles.txtSeason]}
                   label={'Season ' + item}
                 />

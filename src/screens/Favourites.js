@@ -18,6 +18,7 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { sizeFont, sizeHeight, sizeWidth } from '../utils/Size';
 import { useIsFocused } from "@react-navigation/native";
+import Character from '../components/Character';
 
 
 const Favourites = ({navigation}) => {
@@ -180,11 +181,11 @@ const Favourites = ({navigation}) => {
       <FlatList
         numColumns={2}
         keyExtractor={(item, index) => index}
-        renderItem={renderCharacters}
+        // renderItem={renderCharacters}
+        renderItem={(item,index)=> <Character characterData={item.item} characterFavClick={()=>characterFavClick(item.item,index)} navigation={navigation} />}
         data={favouritesData}
         // data={charactersData}
         bounces={false}
-        style={{marginTop: 20, flex: 1}}
         showsHorizontalScrollIndicator={false}
       />
     </View>
